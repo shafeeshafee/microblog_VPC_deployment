@@ -1,14 +1,15 @@
 pipeline {
     agent any
     environment {
-        WEB_SERVER_IP = credentials('web-server-private-ip')
+        WEB_SERVER_IP = credentials('web-server-private-ip') 
+        APP_SERVER_IP = credentials('app-server-private-ip') 
     }
     stages {
         stage('Build') {
             steps {
                 sh '''
                 #!/bin/bash
-                # Update and install Python dependencies
+
                 sudo apt-get update
                 sudo apt-get install -y python3-pip build-essential python3-venv
 
@@ -50,11 +51,8 @@ pipeline {
                     sh '''
                     #!/bin/bash
 
-                    # copies setup.sh to the web server
                     scp scripts/setup.sh ubuntu@$WEB_SERVER_IP:/home/ubuntu/
-
-                    # runs setup.sh on the web server
-                    ssh ubuntu@$WEB_SERVER_IP 'bash ~/setup.sh'
+                    ssh ubuntu@$WEB_SERVER_IP 'bash ~/setup.sh "$APP_SERVER_IP"'
                     '''
                 }
             }
