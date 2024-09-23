@@ -16,11 +16,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh '''
-                #!/bin/bash
-                source venv/bin/activate
-                mkdir -p test-reports
-                python -m pytest tests.py --verbose --junit-xml=test-reports/results.xml
+                sh '''#!/bin/bash
+                    source venv/bin/activate
+                    mkdir -p test-reports
+                    python -m pytest tests.py --verbose --junit-xml=test-reports/results.xml
                 '''
             }
             post {
