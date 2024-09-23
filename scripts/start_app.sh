@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Test
+echo "You are connected to the Application Server"
+
 # update and install deps
 sudo apt update
 sudo apt install -y python3-pip python3-venv git

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Test
+echo "You are connected to the Web Server"
+
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <APP_SERVER_IP>"
