@@ -33,5 +33,5 @@ export FLASK_ENV=production
 # database migrations
 flask db upgrade
 
-# starts the application using Gunicorn via systemd
-sudo systemctl restart microblog
+# starts the application using Gunicorn
+gunicorn -b :5000 -w 3 microblog:app --daemon
