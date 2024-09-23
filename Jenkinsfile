@@ -50,15 +50,15 @@ pipeline {
                         # verify the .ssh directory exists
                         mkdir -p ~/.ssh
 
-                        # adds the Web Server's host key to known_hosts
+                        # add the Web Server's host key to known_hosts
                         ssh-keyscan -H $WEB_SERVER_IP >> ~/.ssh/known_hosts
 
-                        # verifiy the host key was added
+                        # verify the host key was added
                         ssh-keygen -F $WEB_SERVER_IP
 
                         # continue with SCP and SSH commands
                         scp scripts/setup.sh ubuntu@$WEB_SERVER_IP:/home/ubuntu/
-                        ssh ubuntu@$WEB_SERVER_IP 'bash ~/setup.sh "$APP_SERVER_IP"'
+                        ssh ubuntu@$WEB_SERVER_IP "bash ~/setup.sh \\"$APP_SERVER_IP\\""
                         '''
                     }
                 }
