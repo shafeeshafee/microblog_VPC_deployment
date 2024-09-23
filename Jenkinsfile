@@ -1,18 +1,31 @@
 pipeline {
-  agent any
+    agent any
+    environment {
+        WEB_SERVER_IP = credentials('web-server-private-ip')
+    }
     stages {
-        stage ('Build') {
+        stage('Build') {
             steps {
-                sh '''#!/bin/bash
-                <enter your code here>
+                sh '''
+                #!/bin/bash
+                # Update and install Python dependencies
+                sudo apt-get update
+                sudo apt-get install -y python3-pip build-essential python3-venv
+
+                python3 -m venv venv
+                source venv/bin/activate
+
+                pip install --upgrade pip
+                pip install -r requirements.txt
                 '''
             }
         }
-        stage ('Test') {
+        stage('Test') {
             steps {
                 sh '''#!/bin/bash
-                source venv/bin/activate
-                py.test ./tests/unit/ --verbose --junit-xml test-reports/results.xml
+                    source venv/bin/activate
+                    mkdir -p test-reports
+                    python -m pytest tests.py --verbose --junit-xml=test-reports/results.xml
                 '''
             }
             post {
@@ -21,17 +34,29 @@ pipeline {
                 }
             }
         }
-      stage ('OWASP FS SCAN') {
+        stage('OWASP Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--scan ./ --format "XML" --out .', odcInstallation: 'DP-Check'
+            }
+            post {
+                always {
+                    dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                }
             }
         }
-      stage ('Deploy') {
+        stage('Deploy') {
             steps {
-                sh '''#!/bin/bash
-                <enter your code here>
-                '''
+                sshagent(['web-server-ssh-credentials']) {
+                    sh '''
+                    #!/bin/bash
+
+                    # copies setup.sh to the web server
+                    scp scripts/setup.sh ubuntu@$WEB_SERVER_IP:/home/ubuntu/
+
+                    # runs setup.sh on the web server
+                    ssh ubuntu@$WEB_SERVER_IP 'bash ~/setup.sh'
+                    '''
+                }
             }
         }
     }
