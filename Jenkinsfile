@@ -47,14 +47,16 @@ pipeline {
                     sshagent(['web-server-ssh-credentials']) {
                         sh '''
                         #!/bin/bash
-                        # verify the .ssh directory exists
+                        # create the .ssh directory if doesn't exist 
                         mkdir -p ~/.ssh
 
-                        # add the Web Server's host key to known_hosts
-                        ssh-keyscan -H $WEB_SERVER_IP >> ~/.ssh/known_hosts
-
-                        # verify the host key was added
-                        ssh-keygen -F $WEB_SERVER_IP
+                        # Check if the Web Server's host key is already in known_hosts
+                        if ! ssh-keygen -F $WEB_SERVER_IP > /dev/null; then
+                            echo "Adding $WEB_SERVER_IP to known_hosts"
+                            ssh-keyscan -H $WEB_SERVER_IP >> ~/.ssh/known_hosts
+                        else
+                            echo "$WEB_SERVER_IP is already in known_hosts"
+                        fi
 
                         # continue with SCP and SSH commands
                         scp scripts/setup.sh ubuntu@$WEB_SERVER_IP:/home/ubuntu/
