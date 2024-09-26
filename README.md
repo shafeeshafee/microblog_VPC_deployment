@@ -171,7 +171,7 @@ While the system demonstrates significant improvements, it requires further enha
 
 - **Network Stability**:
 
-  - Make sure of Elastic IPs for critical instances
+  - Make use of Elastic IPs for critical instances
   - Leverage AWS Route 53 for DNS management
 
 ## Conclusion
