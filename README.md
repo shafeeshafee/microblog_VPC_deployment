@@ -26,7 +26,7 @@ In this project, the idea was to deploy a web application with a custom VPC. We'
 
 5. **`setup.sh` on Web Server:**
 
-   - SSH into the Application Server using `appserver-keypair.pem`.
+   - SSH into the Application Server using pem key.
    - Executes `start_app.sh` on the Application Server.
 
 6. **`start_app.sh` on Application Server:**
@@ -37,7 +37,9 @@ In this project, the idea was to deploy a web application with a custom VPC. We'
    - Sets environment variables.
    - Starts the application with Gunicorn in the background.
 
-7. **Application Accessibility:**
+   ![flow of deployment steps](/static/images/screenshots/instance-flow.jpg)
+
+7. **Accessing the Application:**
 
    - Users access the application via the Web Server's public IP, which routes traffic to the Application Server.
 
@@ -52,8 +54,6 @@ In this project, the idea was to deploy a web application with a custom VPC. We'
    ![microblog site running live](/static/images/screenshots/graf-2.png)
 
 <br/>
-
-![flow of deployment steps](/static/images/screenshots/instance-flow.jpg)
 
 <br />
 
